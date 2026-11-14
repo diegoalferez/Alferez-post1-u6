@@ -143,4 +143,15 @@ inicio:
         rol al, 4               ; AL = 0101 1010b = 5Ah (nibbles intercambiados)
 .fin_nibbles:
 
+; == VARIANTE: factorial de 5 con MUL (Checkpoint 3) =======================
+        mov ax, 1               ; AX = 1 (acumulador del producto)
+        mov cx, 5               ; CX = contador del bucle
+        mov bx, 1               ; BX = factor actual
+.bucle_factorial:
+        mul bx                  ; DX:AX = AX * BX
+        inc bx                  ; BX = siguiente factor
+        loop .bucle_factorial   ; CX = CX - 1; si CX <> 0 repite
+        ; Al terminar: AX = 1*1*2*3*4*5 = 120 = 78h
+.fin_factorial:
+
         int 20h                 ; el programa retorna a DOS
