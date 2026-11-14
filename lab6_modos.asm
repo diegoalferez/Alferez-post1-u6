@@ -83,6 +83,18 @@ inicio:
         ; Al terminar: AX = 10+20+30+40+50 = 150
 .fin_array:
 
+        ; Extension: recorrido inverso del array (de array[4] a array[0])
+        xor ax, ax              ; AX = 0 (acumulador)
+        mov bx, array           ; BX = direccion base
+        mov cx, 5               ; CX = cantidad de elementos
+        mov si, 8               ; SI = indice en bytes de array[4] = 4 * 2
+.bucle_inverso:
+        add ax, [bx + si]       ; AX = AX + array[SI/2]
+        sub si, 2               ; retrocede 2 bytes (una palabra)
+        loop .bucle_inverso
+        ; Al terminar: AX = 50+40+30+20+10 = 150
+.fin_inverso:
+
         ; Acceso a los campos del registro con desplazamiento fijo
         mov bx, nota1           ; BX = base del registro (nota1, nota2, promedio)
         mov ax, [bx]            ; AX = nota1 = 85 (desplazamiento 0)
