@@ -28,6 +28,11 @@ var_x       dw 0FFFFh
 tabla_hex   db 30h, 31h, 32h, 33h, 34h, 35h, 36h, 37h
             db 38h, 39h, 41h, 42h, 43h, 44h, 45h, 46h
 
+; Matriz de 3 filas x 3 columnas de enteros de 16 bits (3 elementos por fila)
+matriz      dw 1, 2, 3
+            dw 4, 5, 6
+            dw 7, 8, 9
+
 ; -- Codigo ----------------------------------------------------------------
 inicio:
 
@@ -83,5 +88,37 @@ inicio:
         mov ax, [bx]            ; AX = nota1 = 85 (desplazamiento 0)
         mov cx, [bx + 2]        ; CX = nota2 = 73 (desplazamiento 2)
         mov dx, [bx + 4]        ; DX = promedio = 79 (desplazamiento 4)
+
+; == MODO 3b: INDIRECTO POR BP, MARCO DE VARIABLES LOCALES =================
+; BP es el registro base para datos relativos a la pila: usa SS por defecto,
+; a diferencia de BX/SI/DI que usan DS
+        push bp                 ; preserva el BP del programa principal
+        mov bp, sp              ; BP = SP: define la base del marco de pila
+.antes_sub:
+        sub sp, 4               ; reserva 4 bytes (2 palabras) para locales
+.despues_sub:
+        mov word [bp - 2], 99   ; local_1 = 99
+        mov word [bp - 4], 250  ; local_2 = 250
+.locales_listos:
+        mov ax, [bp - 2]        ; AX = local_1 = 99
+        add ax, [bp - 4]        ; AX = 99 + 250 = 349 = 015Dh
+.fin_suma_locales:
+        mov sp, bp              ; SP = BP: libera las variables locales
+        pop bp                  ; restaura el BP del programa principal
+.fin_marco:
+
+; == ACCESO A MATRIZ: DOBLE INDEXACION (FILA, COLUMNA) =====================
+; Elemento buscado: matriz[1][2] = 6
+        mov ax, 1               ; AX = fila = 1
+        mov bx, 3               ; BX = ancho de fila = 3 elementos
+        mul bx                  ; AX = fila * ancho = 3 (en elementos)
+        shl ax, 1               ; AX = 3 * 2 bytes = 6 (desplazamiento de fila)
+        mov si, ax              ; SI = desplazamiento de fila
+        mov cx, 2               ; CX = columna = 2
+        shl cx, 1               ; CX = 2 * 2 bytes = 4 (desplazamiento de columna)
+        add si, cx              ; SI = 6 + 4 = 10 = 0Ah (desplazamiento total)
+        mov bx, matriz          ; BX = direccion base de la matriz
+        mov dx, [bx + si]       ; DX = mem[BX+SI] = matriz[1][2] = 6
+.fin_matriz:
 
         int 20h                 ; el programa retorna a DOS
