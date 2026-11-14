@@ -1,7 +1,9 @@
 # Post-contenido U6: Instrucciones y Direccionamiento (NASM sobre DOSBox)
 
 **Asignatura:** Arquitectura de Computadores, Unidad 6, Post-contenido (ac06post01)
-**Estudiante:** Alferez
+
+**Estudiante:** Diego Alferez
+
 **Repositorio:** `Alferez-post1-u6` (un solo repositorio para las dos partes)
 
 ## Entorno de trabajo
